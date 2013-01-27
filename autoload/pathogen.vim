@@ -1,0 +1,1 @@
+/home/jbud/repositories/vim-pathogen/autoload/pathogen.vim
