@@ -4,6 +4,8 @@ set sessionoptions-=options
 call pathogen#infect()
 syntax on
 filetype plugin indent on
+au BufNewFile,BufEnter,WinEnter,TabEnter,BufWinEnter *.md set filetype=markdown
+au VimEnter,BufEnter,WinEnter,TabEnter *.less set filetype=css
 au BufNewFile,BufRead * if &ft == '' | set ft=noext | endif
 
 
@@ -74,8 +76,8 @@ inoremap <expr> <CR> pumvisible() ? "\<CR>\<CR>" : "\<CR>"
 
 
 " delete without yanking
-nnoremap <leader>d "_d
-vnoremap <leader>d "_d
+" nnoremap <leader>d "_d
+" vnoremap <leader>d "_d
 
 " replace currently selected text with default register
 " without yanking it
@@ -116,3 +118,6 @@ map <Left> gT
 map <Right> gt
 
 set mouse=a " tty mouse (scroll up/down properly)
+map <F4> :TlistToggle<CR>
+" autocmd CursorMoved * exe printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+:let g:session_autoload = 'no'
