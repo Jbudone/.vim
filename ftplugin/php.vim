@@ -1,1 +1,1 @@
-colorscheme golden
+colorscheme h80

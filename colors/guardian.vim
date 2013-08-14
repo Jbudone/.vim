@@ -98,6 +98,6 @@ hi link htmlH6 htmlH5
 
 " And finally.
 
-let g:colors_name = "Guardian"
-let colors_name   = "Guardian"
+let g:colors_name = "guardian"
+let colors_name   = "guardian"
 

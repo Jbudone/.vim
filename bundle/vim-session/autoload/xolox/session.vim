@@ -109,8 +109,29 @@ function! xolox#session#save_state(commands) " {{{2
     if lines[-1] == '" vim: set ft=vim :'
       call remove(lines, -1)
     endif
-    call xolox#session#save_special_windows(lines)
-    call extend(a:commands, map(lines, 's:state_filter(v:val)'))
+" TODO (JB): save tab #, go to tab 1
+let curtab = tabpagenr()
+exec 'tabr'
+" TODO (JB): loop through lines, if line includes 'tabedit' then go to next
+let newlines = []
+for line in lines
+	call extend(newlines, [line])
+	if (len(line)>7 &&  line[0]=='t' &&  line[1]=='a' &&  line[2]=='b' &&  line[3]=='e' &&  line[4]=='d' &&  line[5]=='i' &&  line[6]=='t')
+		normal gt
+		" tab & insert colo g:colors_name
+		call extend(newlines, ["colo " . t:colorscheme])
+	endif
+endfor
+" TODO (JB): go back to tab #
+exec 'tabr'
+let i=1
+while i<curtab
+	normal gt
+	let i+=1
+endwhile
+
+    call xolox#session#save_special_windows(newlines)
+    call extend(a:commands, map(newlines, 's:state_filter(v:val)'))
     return 1
   finally
     let &sessionoptions = ssop_save

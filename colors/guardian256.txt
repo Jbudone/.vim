@@ -1,0 +1,8 @@
+
+
+# Saving this file will update the current colour scheme.
+Basis:guardian
+Dark:
+	GlobalConstant:Red
+
+# vim: ff=unix:noet:ft=EasyColour
