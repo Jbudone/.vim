@@ -8,6 +8,9 @@ syntax on
 filetype plugin indent on
 " au BufNewFile,BufEnter,WinEnter,TabEnter,BufWinEnter *.md set filetype=markdown
 au VimEnter,BufEnter,WinEnter,TabEnter *.less set filetype=css
+au VimEnter,BufEnter,WinEnter,TabEnter *.frag set filetype=glsl
+au VimEnter,BufEnter,WinEnter,TabEnter *.vert set filetype=glsl
+au VimEnter,BufEnter,WinEnter,TabEnter Makefile set filetype=make
 au BufRead,BufNewFile *.des set syntax=levdes
 " au * * ":try | :CSExactColors | catch | | endtry"
 au VimEnter * silent! :CSExactColors
