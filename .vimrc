@@ -306,7 +306,7 @@ vnoremap <C-n> :call JBJumpNextIndentLine( 1,1,visualmode())<CR>
 vnoremap <C-m> :call JBJumpNextIndentLine(-1,1,visualmode())<CR>
 
 " let move_symbols='<>[](){},./\\-=+_;:`~!@#$%^&*"\|'."'"
-let move_symbols=',./\\-=_;:?$(){}[]'
+let move_symbols=',.`~/\\-=_;:?$(){}[]'
 nnoremap <C-l> :call JBMoveTo(move_symbols,'W','n')<CR>
 nnoremap <C-h> :call JBMoveTo(move_symbols,'Wb','n')<CR>
 vnoremap <C-l> :call JBMoveTo(move_symbols,'W',visualmode())<CR>
@@ -325,6 +325,61 @@ endfunction
 nnoremap <C-@> :call JB_SpaceArg()<CR>
 
 
+
+" ######## JB Paragraph Jumping ####################################
+
+function! JB_IsLineEmpty(lnum)
+	let line=getline(a:lnum)
+	let i=0
+	while i<len(line)
+		let char=char2nr(line[i])
+		if (char != 32 && char != 9) " space, tab
+			return 0
+		endif
+		
+		let i+=1
+	endwhile
+	return 1
+endfunction
+
+function! JB_JumpParagraph(direction)
+	let line=getpos('.')[1]
+	let furthest=1
+	if (a:direction == 1) " moving downwards
+		let furthest=getpos('$')[1]
+	endif
+	let outsideParagraph=JB_IsLineEmpty(line)
+
+	if (outsideParagraph == 1) " find nearest paragraph
+		let line += a:direction
+		while line != furthest
+			if (JB_IsLineEmpty(line) == 0)
+				break
+			endif
+			let line += a:direction
+		endwhile
+	endif
+
+	" jump to best line found (could be the end if nothing found)
+	call cursor(line, 1)
+	if line == furthest
+		return
+	endif
+
+	let line += a:direction
+	while line != furthest
+		if (JB_IsLineEmpty(line))
+			break
+		endif
+		let line += a:direction
+	endwhile
+
+	call cursor(line, 1)
+endfunction
+
+
+nnoremap } :call JB_JumpParagraph(1)<CR>
+nnoremap { :call JB_JumpParagraph(-1)<CR>
 
 " ######## Rainbow Parentheses ####################################
 
