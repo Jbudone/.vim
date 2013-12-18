@@ -1,4 +1,4 @@
-# JB's .vim setup
+i# JB's .vim setup
 
 DETAILS
 ==================

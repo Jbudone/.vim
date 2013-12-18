@@ -6,6 +6,8 @@ set sessionoptions-=options
 call pathogen#infect()
 syntax on
 filetype plugin indent on
+set noesckeys " avoids wait time on O from insert mode; but also immediate EasyMotion
+" set timeoutlen=100 " 100ms wait time to recognize escape key
 " au BufNewFile,BufEnter,WinEnter,TabEnter,BufWinEnter *.md set filetype=markdown
 au VimEnter,BufEnter,WinEnter,TabEnter *.less set filetype=css
 au VimEnter,BufEnter,WinEnter,TabEnter *.frag set filetype=glsl
@@ -44,6 +46,8 @@ set shiftwidth=4
 " Searching
 set incsearch
 set hlsearch
+
+set formatoptions=tcqro2lj
 
 
 " !!!!!!!!!!!! UNDER CONSTRUCTION !!!!!!!!!!!!!!
@@ -97,8 +101,8 @@ vnoremap <leader>p "_dP
 
 
 " move to nearest <>[]{}() ,. /\ -=_+ `~!@#$%^&* ;: '"
-function! JBGetMove(flags)
-	let pos = searchpos("<\\|>\\|]\\|[\\|)\\|(\\|}\\|{\\|,\\|\\.\\|/\\|\\\\\\|-\\|=\\|+\\|_\\|;\\|:\\|`\\|\\~\\|!\\|@\\|#\\|\\$\\|%\\|\\^\\|&\\|*\\|\\\"\\|'\\||",a:flags)
+function! JBGetMove(flags,extras)
+	let pos = searchpos("<\\|>\\|]\\|[\\|)\\|(\\|}\\|{\\|,\\|\\.\\|/\\|\\\\\\|-\\|=\\|+\\|_\\|;\\|:\\|`\\|\\~\\|!\\|@\\|#\\|\\$\\|%\\|\\^\\|&\\|*\\|\\\"\\|'\\||" . a:extras,a:flags)
 	return pos
 endfunction
 
@@ -119,11 +123,13 @@ function! JBMoveTo(chars,flags,mode)
 	endwhile
 	
 
+
 	" search for the first matching needle in the haystack
 	let dowhile=1
 	let pos=[0,0]
 	let origpos = getpos('.')
 	let curpos = getpos('.')
+	let charAtCursor = getline(curpos[1])[curpos[2]-1]
 	let vmode = 0
 	if (a:mode == "v" || a:mode == "V" || a:mode == "\<C-V>")
 		" must move cursor to end of selection
@@ -158,9 +164,33 @@ function! JBMoveTo(chars,flags,mode)
 		call cursor(curpos[1], curpos[2])
 
 	endif
+
+	let numbers = "1234567890"
+	let uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	let lowercase = "abcdefghijklmnopqrstuvwxyz"
+	let includedInSearch = ""
+	if (charAtCursor >= 'a' && charAtCursor <= 'z')
+		let includedInSearch = numbers . uppercase
+	elseif (charAtCursor >= 'A' && charAtCursor <= 'Z')
+		" TODO: what if its an all upper case word?
+		let includedInSearch = numbers . uppercase
+	elseif (charAtCursor >= '0' && charAtCursor <= '9')
+		let includedInSearch = uppercase
+	else
+		let includedInSearch = uppercase
+	endif
+
+	let extraSearch = ""
+	let i=0
+	while i<len(includedInSearch)
+		let needles=add(needles,includedInSearch[i])
+		let extraSearch .= "\\|" . includedInSearch[i]
+		let i+=1
+	endwhile
+
 	while pos[0]!=0 || dowhile==1
 		let dowhile=0
-		let pos=JBGetMove(a:flags)
+		let pos=JBGetMove(a:flags, extraSearch)
 		if pos[0]!=0
 			for needle in needles
 				if needle==getline(pos[0])[pos[1]-1]
@@ -300,6 +330,8 @@ nnoremap <C-k> :call JBJumpNextIndentLine(-1,0,'n')<CR>
 nnoremap <C-j> :call JBJumpNextIndentLine( 1,0,'n')<CR>
 nnoremap <C-n> :call JBJumpNextIndentLine( 1,1,'n')<CR>
 nnoremap <C-m> :call JBJumpNextIndentLine(-1,1,'n')<CR>
+map <Tab> :call JBJumpNextIndentLine(-1,1,'n')<CR>
+nnoremap <Return> :call JBJumpNextIndentLine(1,1,'n')<CR>
 vnoremap <C-k> :call JBJumpNextIndentLine(-1,0,visualmode())<CR>
 vnoremap <C-j> :call JBJumpNextIndentLine( 1,0,visualmode())<CR>
 vnoremap <C-n> :call JBJumpNextIndentLine( 1,1,visualmode())<CR>
@@ -312,6 +344,8 @@ nnoremap <C-h> :call JBMoveTo(move_symbols,'Wb','n')<CR>
 vnoremap <C-l> :call JBMoveTo(move_symbols,'W',visualmode())<CR>
 vnoremap <C-h> :call JBMoveTo(move_symbols,'Wb',visualmode())<CR>
 
+
+inoremap <C-n> <C-x><C-n>
 
 
 " ######## JB Arg Spacing ####################################
@@ -422,3 +456,8 @@ map <F4> :TlistToggle<CR>
 
 :set tags+=/usr/local/include/tags
 :set tags+=/usr/include/tags
+
+
+" ######## ab stuff ##############################################
+:ab !!!!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+:ab WARN!! WARNING WARNING WARNING WARNING WARNING WARNING
