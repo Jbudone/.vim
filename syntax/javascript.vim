@@ -18,7 +18,7 @@ if !exists("main_syntax")
 endif
 
 "" Drop fold if it set but VIM doesn't support it.
-let b:javascript_fold='true'
+let b:javascript_fold=0
 if version < 600    " Don't support the old version
   unlet! b:javascript_fold
 endif
@@ -165,7 +165,7 @@ if exists("b:javascript_fold")
       " only if the entire buffer is JavaScript, but not if JavaScript syntax
       " is embedded in another syntax (e.g. HTML).
       setlocal foldmethod=syntax
-      setlocal foldlevel=4
+      setlocal foldlevel=2
     endif
 else
     syntax keyword javaScriptFunction       function
