@@ -13,6 +13,7 @@ au VimEnter,BufEnter,WinEnter,TabEnter *.less set filetype=css
 au VimEnter,BufEnter,WinEnter,TabEnter *.frag set filetype=glsl
 au VimEnter,BufEnter,WinEnter,TabEnter *.vert set filetype=glsl
 au VimEnter,BufEnter,WinEnter,TabEnter Makefile set filetype=make
+au VimEnter,BufEnter,WinEnter,TabEnter *.md set filetype=markdown
 au BufRead,BufNewFile *.des set syntax=levdes
 " au * * ":try | :CSExactColors | catch | | endtry"
 au VimEnter * silent! :CSExactColors
@@ -31,6 +32,7 @@ colorscheme distinguished
 " Save local settings (folds and such)
 au BufWinLeave * silent! mkview
 au BufWinEnter * silent! loadview
+set foldmethod=manual
 
 
 " Indenting
@@ -330,8 +332,8 @@ nnoremap <C-k> :call JBJumpNextIndentLine(-1,0,'n')<CR>
 nnoremap <C-j> :call JBJumpNextIndentLine( 1,0,'n')<CR>
 nnoremap <C-n> :call JBJumpNextIndentLine( 1,1,'n')<CR>
 nnoremap <C-m> :call JBJumpNextIndentLine(-1,1,'n')<CR>
-map <Tab> :call JBJumpNextIndentLine(-1,1,'n')<CR>
-nnoremap <Return> :call JBJumpNextIndentLine(1,1,'n')<CR>
+" map <Tab> :call JBJumpNextIndentLine(-1,1,'n')<CR>
+" nnoremap <Return> :call JBJumpNextIndentLine(1,1,'n')<CR>
 vnoremap <C-k> :call JBJumpNextIndentLine(-1,0,visualmode())<CR>
 vnoremap <C-j> :call JBJumpNextIndentLine( 1,0,visualmode())<CR>
 vnoremap <C-n> :call JBJumpNextIndentLine( 1,1,visualmode())<CR>

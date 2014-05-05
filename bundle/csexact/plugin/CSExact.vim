@@ -290,7 +290,12 @@ function! s:CSExactRefresh()
         return
     endif
 
-    let highlights = s:GetHighlights()
+	try
+		let highlights = s:GetHighlights()
+	catch
+		return
+	endtry
+		
     let normal = get(highlights, "Normal", {})
     " Use defaults if no colors were given
     if !has_key(normal, "guifg")
@@ -437,7 +442,11 @@ function! s:GetHighlights()
 
         " Key-Value items
         for kv in split(item_string, '\v \ze\w+\=')
-            let [key, value] = matchlist(kv, '\v(\w+)\=(.*)')[1:2]
+			try
+				let [key, value] = matchlist(kv, '\v(\w+)\=(.*)')[1:2]
+			catch
+				throw "Bad highglight" " JB
+			endtry
 
             if key =~ '\v(fg|bg|sp)$'
                 " Handle color
